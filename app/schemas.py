@@ -43,12 +43,12 @@ class PostBase(BaseModel):
 
 
 class PostCreate(PostBase):
-    user_id: str = UUID4
+    # user_id: str = UUID4 -- there's no need to add user_id manually because we get the id from the current_user
     created_at: datetime = datetime.now()
 
 
 class PostUpdate(PostBase):
-    user_id: str = UUID4
+    # user_id: str = UUID4-- there's no need to add user_id manually because we get the id from the current_user
 
     class Config:
         validate_assignment = True
