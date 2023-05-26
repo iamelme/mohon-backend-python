@@ -45,7 +45,7 @@ async def new_post(
 ):
     print(add_post)
     test = add_post.dict()
-    print(f"test", test)
+    print(f"test{test}")
 
     print(f"current_user", current_user)
     new_post = models.Post(user_id=current_user.id, **add_post.dict())

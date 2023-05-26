@@ -25,7 +25,7 @@ class User(Base):
     role = Column(String, default="user")
     created_at = Column(TIMESTAMP(timezone=True), server_default=text("now()"))
     updated_at = Column(TIMESTAMP(timezone=True), onupdate=text("now()"))
-    posts = relationship("Post", back_populates="user")
+    # posts = relationship("Post", back_populates="user")
 
 
 class Post(Base):
@@ -48,4 +48,4 @@ class Post(Base):
 
     user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
 
-    user = relationship("User", back_populates="posts")
+    user = relationship("User")

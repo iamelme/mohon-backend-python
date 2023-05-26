@@ -97,7 +97,7 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    id: UUID = None
+    id: UUID
 
 
 class CurrentUser(BaseModel):
