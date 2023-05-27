@@ -1,12 +1,12 @@
+from datetime import datetime, timedelta
+from uuid import UUID
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
-from datetime import datetime, timedelta
+
 from . import schemas
-
 from .config import settings
-
-from uuid import UUID
 
 oauth_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
@@ -31,11 +31,12 @@ def verify_access_token(token: str, credentials_exception):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
 
         id: UUID = payload.get("user_id")
+        role: str = payload.get("role")
 
         if id is None:
             raise credentials_exception
 
-        token_data = schemas.TokenData(id=id)
+        token_data = schemas.TokenData(id=id, role=role)
 
     except JWTError:
         raise credentials_exception

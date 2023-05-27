@@ -10,13 +10,25 @@ class UserBase(BaseModel):
     first_name: str
     last_name: str
     email: EmailStr
-    created_at: datetime
+    # created_at: datetime
 
 
 class UserCreate(UserBase):
     password: str
     is_active: bool = True
     created_at: datetime = datetime.now()
+
+
+class UserUpdate(UserBase):
+    role: Optional[str] = "user"
+
+    class Config:
+        validate_assignment = True
+
+    @root_validator
+    def number_validator(cls, values):
+        values["updated_at"] = datetime.now()
+        return values
 
 
 # use as response model
@@ -88,6 +100,7 @@ class Login(BaseModel):
     password: str
 
 
+## TOKEN
 class Token(BaseModel):
     access_token: str
     token_type: str
@@ -98,7 +111,13 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     id: UUID
+    role: Optional[str]
 
 
 class CurrentUser(BaseModel):
     id: UUID
+    role: Optional[str]
+
+
+class TokenPayload(BaseModel):
+    user_id: UUID

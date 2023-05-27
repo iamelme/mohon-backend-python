@@ -1,8 +1,9 @@
-from fastapi import APIRouter, Depends, status, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+
+from .. import models, oauth2, schemas
 from ..database import get_db
-from .. import models, schemas, oauth2
 from ..utils import verify
 
 router = APIRouter(tags=["Authentication"])
@@ -24,6 +25,12 @@ async def login(
             detail=f"Email or/and password is incorrect",
         )
 
+    if not user.is_active:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User is not allowed to login. Please contact your administrator.",
+        )
+
     if not verify(user_cred.password, user.password):
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -32,6 +39,8 @@ async def login(
 
     print(f"user id ", user.id)
 
-    access_token = oauth2.create_access_token(data={"user_id": str(user.id)})
+    access_token = oauth2.create_access_token(
+        data={"user_id": str(user.id), "role": str(user.role), "is_active": bool(user.is_active)}
+    )
 
     return {"access_token": access_token, "token_type": "bearer"}

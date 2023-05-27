@@ -1,7 +1,6 @@
 from sqlalchemy import ARRAY, TIMESTAMP, Boolean, Column, ForeignKey, String
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy.sql import func
 from sqlalchemy.sql.expression import text
 
 from .database import Base
