@@ -15,7 +15,7 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
-    is_active: bool = True
+    is_active: bool = False
     created_at: datetime = datetime.now()
 
 

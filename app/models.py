@@ -20,7 +20,7 @@ class User(Base):
     last_name = Column(String, nullable=False)
     email = Column(String, unique=True, index=True)
     password = Column(String, nullable=False)
-    is_active = Column(Boolean, nullable=False, server_default="TRUE")
+    is_active = Column(Boolean, nullable=False, server_default="FALSE")
     role = Column(String, default="user")
     created_at = Column(TIMESTAMP(timezone=True), server_default=text("now()"))
     updated_at = Column(TIMESTAMP(timezone=True), onupdate=text("now()"))
