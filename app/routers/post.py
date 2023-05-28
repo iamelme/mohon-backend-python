@@ -1,6 +1,7 @@
 from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
+from sqlalchemy import and_
 from sqlalchemy.orm import Session
 from sqlalchemy.sql.expression import func
 
@@ -11,15 +12,17 @@ router = APIRouter(prefix="/api/posts", tags=["Posts"])
 
 
 @router.get("/", response_model=schemas.PostOut)
-async def get_posts(db: Session = Depends(get_db), limit: int = 10, skip: int = 0, search: Optional[str] = ""):
-    posts = db.query(models.Post)
+async def get_posts(db: Session = Depends(get_db), category="post", limit: int = 10, skip: int = 0, search: str = ""):
+    posts = db.query(models.Post).filter(and_(models.Post.category == category, models.Post.title.contains(search)))
 
-    total = db.query(func.count(models.Post.id))
+    total = db.query(func.count(models.Post.id)).filter(
+        and_(models.Post.category == category, models.Post.title.contains(search))
+    )
 
-    if search:
-        title_contains = models.Post.title.contains(search)
-        posts = posts.filter(title_contains)
-        total = total.filter(title_contains)
+    # if search:
+    #     title_contains = models.Post.title.contains(search)
+    #     posts = posts.filter(title_contains)
+    #     total = total.filter(title_contains)
 
     posts = posts.limit(limit).offset(skip).all()
 
@@ -78,7 +81,6 @@ async def delete_post(
             detail="You are now allowed to delete this post.",
         )
 
-    # conn.commit()
     post_query.delete()
 
     db.commit()
@@ -97,12 +99,6 @@ async def update_post(
     post_query = db.query(models.Post).filter(models.Post.id == id)
 
     found_post = post_query.first()
-
-    # print(post)
-    # print(post.dict())
-    # print(f"is the same?", found_post.user_id == current_user.id)
-    # print(found_post.user_id, current_user.id)
-    # print("after post first")
 
     if found_post == None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"cannot find id {id}")

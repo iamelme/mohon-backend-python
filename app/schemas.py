@@ -52,6 +52,8 @@ class PostBase(BaseModel):
     content: str
     is_publish: bool = False
     tags: Optional[List[str]]
+    category: str = "post"
+    banner: Optional[str] = None
 
 
 class PostCreate(PostBase):
@@ -79,6 +81,8 @@ class Post(PostBase):
     updated_at: Optional[datetime]
     user: UserOut
     tags: Optional[List[str]]
+    category: str = "post"
+    banner: Optional[str] = None
 
     class Config:
         orm_mode = True

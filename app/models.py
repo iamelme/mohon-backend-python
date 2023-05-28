@@ -22,9 +22,8 @@ class User(Base):
     password = Column(String, nullable=False)
     is_active = Column(Boolean, nullable=False, server_default="FALSE")
     role = Column(String, default="user")
-    created_at = Column(TIMESTAMP(timezone=True), server_default=text("now()"))
+    created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
     updated_at = Column(TIMESTAMP(timezone=True), onupdate=text("now()"))
-    # posts = relationship("Post", back_populates="user")
 
 
 class Post(Base):
@@ -40,9 +39,11 @@ class Post(Base):
     title = Column(String, nullable=False)
     content = Column(String, nullable=False)
     is_publish = Column(Boolean, nullable=False, server_default="FALSE")
-    created_at = Column(TIMESTAMP(timezone=True), server_default=text("now()"))
+    category = Column(String, nullable=False, server_default="post")
+    created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text("now()"))
     updated_at = Column(TIMESTAMP(timezone=True), onupdate=text("now()"))
 
+    banner = Column(String, nullable=True)
     tags = Column(ARRAY(String), nullable=True)
 
     user_id: Mapped[UUID] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
